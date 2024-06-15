@@ -39,10 +39,16 @@ def show_question(id):
 def handle_response():
     '''add user response to session['responses'] (aka my fake db) and redirect to next question'''
     responses = session['responses']
-    response = request.form['response']
-    responses.append(response)
-    session['responses'] = responses
-    return redirect(f'/questions/{len(session['responses'])}')
+
+    if request.form.get('response'):
+        #if the user responded to the question
+        response = request.form['response']
+        responses.append(response)
+        session['responses'] = responses
+        return redirect(f'/questions/{len(session['responses'])}')
+    else: #if the user hit submit without selecting a question
+        flash('Please respond. All questions are required')
+        return redirect(f'/questions/{len(session['responses'])}')
 
 @app.route('/completed')
 def complete():
